@@ -21,9 +21,15 @@ class BookAdapter : RecyclerView.Adapter<BookAdapter.BookHolder>() {
     }
 
     override fun onBindViewHolder(holder: BookHolder, position: Int) {
-        holder.itemBinding.tvItem.text = books?.get(position).toString()
-        holder.itemBinding.clItem.setOnClickListener{
-            clickListener?.onItemClick(it, position)
+        val currentItem = books?.get(position)
+
+        currentItem?.let { item ->
+            holder.itemBinding.name.text = item.inst_nm // inst_nm을 name TextView에 설정
+            holder.itemBinding.type.text = item.type // type을 type TextView에 설정
+
+            holder.itemBinding.type.setOnClickListener {
+                clickListener?.onItemClick(it, position)
+            }
         }
     }
 

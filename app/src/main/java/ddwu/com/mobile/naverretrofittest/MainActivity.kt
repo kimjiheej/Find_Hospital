@@ -4,9 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import ddwu.com.mobile.naverretrofittest.data.BookRoot
+import ddwu.com.mobile.naverretrofittest.data.HospitalRoot
 import ddwu.com.mobile.naverretrofittest.databinding.ActivityMainBinding
 import ddwu.com.mobile.naverretrofittest.network.IBookAPIService
 import ddwu.com.mobile.naverretrofittest.ui.BookAdapter
@@ -32,43 +33,26 @@ class MainActivity : AppCompatActivity() {
         mainBinding.rvBooks.layoutManager = LinearLayoutManager(this)
 
 
-        adapter.setOnItemClickListener(object : BookAdapter.OnItemClickListner {
-            override fun onItemClick(view: View, position: Int) {
-                // RecyclerView 항목 클릭 시 해당 위치의 Item 이 갖고 있는 image 를 Glide 에 전달
-
-                val url = adapter?.books?.get(position)?.image
-
-                Glide.with(applicationContext)
-                    .load(url)
-                    .into(mainBinding.imageView)
-            }
-        })
-
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(resources.getString(R.string.naver_api_url))
+            .baseUrl(resources.getString(R.string.hospital_url))
             .addConverterFactory( GsonConverterFactory.create())
             .build()
 
         val service = retrofit.create(IBookAPIService::class.java)
 
-
-
         mainBinding.btnSearch.setOnClickListener {
             val keyword = mainBinding.etKeyword.text.toString()
 
             val apiCall = service.getBooksByKeyword(
-                resources.getString(R.string.client_id),
-                resources.getString(R.string.client_secret),
-                keyword,
+                resources.getString(R.string.hospital_key),
+                "5","10",keyword
             )
 
-            apiCall.enqueue(object: Callback<BookRoot> {
-                override fun onResponse(call: Call<BookRoot>, response: Response<BookRoot>) {
-
+            apiCall.enqueue(object : Callback<HospitalRoot> {
+                override fun onResponse(call: Call<HospitalRoot>, response: Response<HospitalRoot>) {
                     if (response.isSuccessful) {
-
-                        val root: BookRoot? = response.body()
+                        val root: HospitalRoot? = response.body()
                         adapter.books = root?.items
                         adapter.notifyDataSetChanged()
                     } else {
@@ -76,10 +60,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<BookRoot>, t: Throwable) {
-                    TODO("Not yet implemented")
+                override fun onFailure(call: Call<HospitalRoot>, t: Throwable) {
+                    // 실패 시 처리할 내용
                 }
             })
         }
     }
 }
+

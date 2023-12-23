@@ -1,19 +1,17 @@
 package ddwu.com.mobile.naverretrofittest.network
 
-import ddwu.com.mobile.naverretrofittest.data.BookRoot
+import ddwu.com.mobile.naverretrofittest.data.HospitalRoot
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface IBookAPIService {
-
-    @GET("v1/search/book.json")
+    @GET("getMdclinst")
     fun getBooksByKeyword (
-        @Header("X-Naver-Client-Id") clientId: String,
-        @Header("X-Naver-Client-Secret") clientSecret: String,
-        @Query("query")
-        keyword: String
-    )  : Call<BookRoot>
-
+        @Query("ServiceKey") serviceKey: String,
+        @Query("pageNo") page: String,
+        @Query("numOfRows") rows :  String,
+        @Query("gu") gu: String? //
+    )  : Call<HospitalRoot>
 }

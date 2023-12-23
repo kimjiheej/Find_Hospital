@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">NaverRetrofitTest</string>
-    <string name="naver_api_url">https://openapi.naver.com/</string>
-    <string name="client_id">_qkFWOaf44yBdOnmb_Sg </string>
-    <string name="client_secret">J1X96KDb75 </string>
+
+    <string name="hospital_url">http://apis.data.go.kr/4050000/mdclinst/</string>
+    <string name="hospital_key">yGGlIiFnu8Afs+GZyQU67k4ptiV09jrQMYv+7iKPcm+Yjvynd6mahc1ZFeybHC6KXhLJRzFTPl/mK0MTy2eOsA==</string>
 </resources>
