@@ -97,7 +97,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val markerOptions = MarkerOptions()
             .position(location)
             .title(instNm) // instNm을 마커의 제목으로 설정
-            .snippet(telNo) // telNo를 마커의 설명으로 설정
+            .snippet("전화번호: " + telNo) // telNo를 마커의 설명으로 설정
 
         return mMap.addMarker(markerOptions)
     }
