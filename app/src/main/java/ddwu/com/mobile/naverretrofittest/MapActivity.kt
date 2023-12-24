@@ -52,12 +52,21 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         // lctn 정보를 이용하여 주소를 좌표로 변환하는 코드를 작성해야 합니다.
         val location = getLocationFromAddress(lctn) // 주소를 좌표로 변환하는 함수 호출
         location?.let {
-            val marker = addMarker(it) // 변환된 좌표에 마커 추가
+            val instNm = intent.getStringExtra("inst_nm") // 가져오려는 instNm 정보
+            val telNo = intent.getStringExtra("telno") // 가져오려는 telNo 정보
+
+            // 추가된 마커를 변수에 저장
+            val marker = if (instNm != null && telNo != null) {
+                addMarker(it, instNm, telNo)
+            } else {
+                null // 마커가 추가되지 않을 경우 null 반환
+            }
+
             moveCamera(it) // 카메라 이동
 
             // 마커 클릭 이벤트 처리
             mMap.setOnMarkerClickListener { clickedMarker ->
-                if (clickedMarker == marker) {
+                if (marker != null && clickedMarker == marker) {
                     clickedMarker.showInfoWindow() // 클릭된 마커의 InfoWindow 표시
                 }
                 true // true를 반환하여 이벤트 소비했음을 알림
@@ -84,8 +93,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     // 마커를 추가하는 함수
-    private fun addMarker(location: LatLng): Marker? {
-        return mMap.addMarker(MarkerOptions().position(location).title("Marker"))
+    private fun addMarker(location: LatLng, instNm: String, telNo: String): Marker? {
+        val markerOptions = MarkerOptions()
+            .position(location)
+            .title(instNm) // instNm을 마커의 제목으로 설정
+            .snippet(telNo) // telNo를 마커의 설명으로 설정
+
+        return mMap.addMarker(markerOptions)
     }
 
     // 카메라를 이동하는 함수
