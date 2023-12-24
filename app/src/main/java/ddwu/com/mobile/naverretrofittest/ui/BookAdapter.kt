@@ -1,6 +1,8 @@
 package ddwu.com.mobile.naverretrofittest.ui
 
 import android.content.Intent
+import android.location.Geocoder
+import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import ddwu.com.mobile.naverretrofittest.MapActivity
 import ddwu.com.mobile.naverretrofittest.data.Item
 import ddwu.com.mobile.naverretrofittest.databinding.ListItemBinding
+import java.io.IOException
 
 
-class BookAdapter : RecyclerView.Adapter<BookAdapter.BookHolder>() {
+class BookAdapter(private var currentLoc: Location?) : RecyclerView.Adapter<BookAdapter.BookHolder>() {
     var books: List<Item>? = null
 
     override fun getItemCount(): Int {
@@ -41,6 +44,24 @@ class BookAdapter : RecyclerView.Adapter<BookAdapter.BookHolder>() {
                 intent.putExtra("inst_nm", instNm)
                 intent.putExtra("telno", telNo)
 
+                currentLoc?.let { location ->
+                    // Location 객체 전달
+                    intent.putExtra("current_loc", location)
+
+                    // currentLoc(Location 객체)를 주소로 변환하여 String으로 전달
+                    try {
+                        val geocoder = Geocoder(context)
+                        val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+
+                        if (addresses?.isNotEmpty()!!) {
+                            val address = addresses[0].getAddressLine(0)
+                            intent.putExtra("current_address", address)
+                        }
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+
                 context.startActivity(intent)
             }
 
@@ -50,20 +71,20 @@ class BookAdapter : RecyclerView.Adapter<BookAdapter.BookHolder>() {
         }
     }
 
-
-
-
     class BookHolder(val itemBinding: ListItemBinding) : RecyclerView.ViewHolder(itemBinding.root)
 
-    interface OnItemClickListner {
+    interface OnItemClickListener {
         fun onItemClick(view: View, position: Int)
     }
 
-    var clickListener: OnItemClickListner? = null
+    private var clickListener: OnItemClickListener? = null
 
-    fun setOnItemClickListener(listener: OnItemClickListner) {
+    fun setOnItemClickListener(listener: OnItemClickListener) {
         this.clickListener = listener
     }
 
-
+    fun updateLocation(newLocation: Location) {
+        currentLoc = newLocation
+        notifyDataSetChanged() // 위치 정보가 업데이트되면 RecyclerView를 새로 고침
+    }
 }

@@ -1,33 +1,22 @@
 package ddwu.com.mobile.naverretrofittest
 
 import android.Manifest
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Looper
-import android.util.Log
-import android.view.View
 import android.widget.Toast
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.location.LocationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
 import ddwu.com.mobile.naverretrofittest.data.HospitalRoot
 import ddwu.com.mobile.naverretrofittest.databinding.ActivityMainBinding
 import ddwu.com.mobile.naverretrofittest.network.IBookAPIService
@@ -49,7 +38,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var geocoder: Geocoder
-    private lateinit var currentLoc: Location
+    private var currentLoc: Location? = null // null로 초기화
+
     private var isFirstLocationUpdate = true
 
     private lateinit var locCallback: LocationCallback
@@ -62,9 +52,17 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         geocoder = Geocoder(this)
 
-        adapter = BookAdapter()
+
+        adapter = BookAdapter(currentLoc)
         mainBinding.rvBooks.adapter = adapter
         mainBinding.rvBooks.layoutManager = LinearLayoutManager(this)
+
+        locationPermissionRequest.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
 
         val retrofit = Retrofit.Builder()
             .baseUrl(resources.getString(R.string.hospital_url))
@@ -100,30 +98,32 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
-
         locCallback = object : LocationCallback() {
             @SuppressLint("NewApi")
             override fun onLocationResult(locResult: LocationResult) {
                 if (isFirstLocationUpdate) {
-                    currentLoc = locResult.locations[0]
-                    geocoder.getFromLocation(
-                        currentLoc.latitude,
-                        currentLoc.longitude,
-                        5
-                    ) { addresses ->
-                        CoroutineScope(Dispatchers.Main).launch {
-                            showData("Latitude: ${currentLoc.latitude}, Longitude: ${currentLoc.longitude}")
-                            showData(addresses?.get(0)?.getAddressLine(0).toString())
-                            isFirstLocationUpdate = false
-                            fusedLocationClient.removeLocationUpdates(locCallback)
+                    locResult.locations.firstOrNull()?.let { location ->
+                        currentLoc = location // 현재 위치 정보 업데이트
+                        adapter.updateLocation(location) // Adapter에 위치 정보 전달
+
+                        geocoder.getFromLocation(
+                            location.latitude,
+                            location.longitude,
+                            5
+                        ) { addresses ->
+                            CoroutineScope(Dispatchers.Main).launch {
+                                showData("Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+                                showData(addresses?.get(0)?.getAddressLine(0).toString())
+                                isFirstLocationUpdate = false
+                                fusedLocationClient.removeLocationUpdates(locCallback)
+                            }
                         }
                     }
                 }
             }
         }
-
-        checkPermissions()
     }
+
 
     private val locRequest = LocationRequest.Builder(5000)
         .setMinUpdateIntervalMillis(3000)
@@ -160,6 +160,7 @@ class MainActivity : AppCompatActivity() {
             )
         }
     }
+
 
     private val locationPermissionRequest =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->

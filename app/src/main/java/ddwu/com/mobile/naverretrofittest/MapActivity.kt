@@ -48,12 +48,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private var lctn: String? = null // lctn 정보를 저장할 변수 선언
 
+    var centerMarker : Marker? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
+
         // intent로부터 lctn 정보 받아오기
         lctn = intent.getStringExtra("lctn")
+
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -69,20 +73,30 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // lctn 정보를 이용하여 주소를 좌표로 변환하는 코드를 작성해야 합니다.
-        val location = getLocationFromAddress(lctn) // 주소를 좌표로 변환하는 함수 호출
-        location?.let {
+       val currentLoc = intent.getParcelableExtra<Location>("current_loc")
+
+
+        currentLoc?.let { location ->
+            val currentLatLng = LatLng(currentLoc.latitude, currentLoc.longitude)
+            animateCamera(currentLatLng)
+            addMarker(currentLatLng, "하하", "호호")
+        }
+
+        val lctn = intent.getStringExtra("lctn")
+        val hospitalLocation = getLocationFromAddress(lctn)
+
+
+        hospitalLocation?.let {
             val instNm = intent.getStringExtra("inst_nm") // 가져오려는 instNm 정보
             val telNo = intent.getStringExtra("telno") // 가져오려는 telNo 정보
 
-            // 추가된 마커를 변수에 저장
             val marker = if (instNm != null && telNo != null) {
                 addMarker(it, instNm, telNo)
             } else {
                 null // 마커가 추가되지 않을 경우 null 반환
             }
 
-            moveCamera(it) // 카메라 이동
+            animateCamera(it) // 카메라 이동
 
             // 마커 클릭 이벤트 처리
             mMap.setOnMarkerClickListener { clickedMarker ->
@@ -91,8 +105,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
                 true // true를 반환하여 이벤트 소비했음을 알림
             }
+
+            currentLoc?.let { currentLocation ->
+                drawLine(
+                    LatLng(currentLoc.latitude,currentLoc.longitude),
+                    LatLng(it.latitude, it.longitude)
+                )
+            }
         }
     }
+
 
     // 주소를 좌표로 변환하는 함수
     private fun getLocationFromAddress(strAddress: String?): LatLng? {
@@ -125,5 +147,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     // 카메라를 이동하는 함수
     private fun moveCamera(location: LatLng) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+    }
+
+    private fun animateCamera(location: LatLng){
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location,17f))
+    }
+    fun drawLine(startPoint: LatLng, endPoint: LatLng) {
+        val polylineOptions = PolylineOptions()
+            .color(Color.RED)
+            .width(5f)
+            .add(startPoint, endPoint)
+
+        mMap.addPolyline(polylineOptions)
     }
 }
