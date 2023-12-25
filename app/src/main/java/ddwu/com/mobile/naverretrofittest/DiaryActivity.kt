@@ -37,7 +37,7 @@ class DiaryActivity : AppCompatActivity() {
 
         val stringBuilder = StringBuilder()
         for (partialItem in partialItemList) {
-            stringBuilder.append("ID: ${partialItem.id}, Name: ${partialItem.name}, Type: ${partialItem.type}\n")
+            stringBuilder.append(" Name: ${partialItem.name}, Type: ${partialItem.type}\n")
         }
 
         hospitalListTextView.text = stringBuilder.toString()
