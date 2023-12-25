@@ -2,6 +2,7 @@ package ddwu.com.mobile.naverretrofittest
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -18,7 +19,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import ddwu.com.mobile.naverretrofittest.data.HospitalRoot
 import ddwu.com.mobile.naverretrofittest.databinding.ActivityMainBinding
-import ddwu.com.mobile.naverretrofittest.network.IBookAPIService
+import ddwu.com.mobile.naverretrofittest.network.HospitalAPIService
 import ddwu.com.mobile.naverretrofittest.ui.HospitalAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        val service = retrofit.create(IBookAPIService::class.java)
+        val service = retrofit.create(HospitalAPIService::class.java)
 
         mainBinding.btnSearch.setOnClickListener {
             val keyword = mainBinding.etKeyword.text.toString()
@@ -120,6 +121,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        mainBinding.diary.setOnClickListener {
+            val intent = Intent(this@MainActivity, DiaryActivity::class.java)
+            startActivity(intent)
         }
     }
 

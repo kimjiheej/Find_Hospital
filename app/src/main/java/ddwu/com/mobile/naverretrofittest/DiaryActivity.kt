@@ -1,18 +1,19 @@
 package ddwu.com.mobile.naverretrofittest
 
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import ddwu.com.mobile.naverretrofittest.databinding.ActivityDiaryBinding
-import ddwu.com.mobile.naverretrofittest.databinding.ActivityMainBinding
 import ddwu.com.mobile.naverretrofittest.ui.HospitalAdapter
+
 
 class DiaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDiaryBinding
     private lateinit var dbHelper: HospitalDBHelper
-    private lateinit var adapter: HospitalAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,14 +21,25 @@ class DiaryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbHelper = HospitalDBHelper(this)
-        val dataFromDB = dbHelper.getAllPartialData() // 수정된 메소드 이름 사용
 
-        adapter = HospitalAdapter(null)
-        binding.diaries.adapter = adapter
-        binding.diaries.layoutManager = LinearLayoutManager(this)
+        val btnRemove = findViewById<Button>(R.id.btnRemove)
+        btnRemove.setOnClickListener {
+            val intent = Intent(this, RemoveActivity::class.java)
+            startActivity(intent)
+        }
+        printPartialData()
+}
 
-//        // Item -> PartialItem으로 변경됨
-//        adapter.books = dataFromDB
-//        adapter.notifyDataSetChanged()
+    private fun printPartialData() {
+        val partialItemList = dbHelper.getAllPartialData()
+
+        val hospitalListTextView: TextView = findViewById(R.id.HospitalList)
+
+        val stringBuilder = StringBuilder()
+        for (partialItem in partialItemList) {
+            stringBuilder.append("ID: ${partialItem.id}, Name: ${partialItem.name}, Type: ${partialItem.type}\n")
+        }
+
+        hospitalListTextView.text = stringBuilder.toString()
     }
 }

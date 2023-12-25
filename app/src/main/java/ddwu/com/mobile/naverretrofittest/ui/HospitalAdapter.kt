@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import ddwu.com.mobile.naverretrofittest.HospitalDBHelper
 import ddwu.com.mobile.naverretrofittest.MapActivity
 import ddwu.com.mobile.naverretrofittest.data.Item
+import ddwu.com.mobile.naverretrofittest.databinding.ListDiaryBinding
 import ddwu.com.mobile.naverretrofittest.databinding.ListItemBinding
 import java.io.IOException
-
 
 class HospitalAdapter(private var currentLoc: Location?) : RecyclerView.Adapter<HospitalAdapter.BookHolder>() {
     var books: List<Item>? = null

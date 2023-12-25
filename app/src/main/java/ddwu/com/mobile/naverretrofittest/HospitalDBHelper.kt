@@ -30,7 +30,6 @@ class HospitalDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME,nul
         Log.d(TAG,CREATE_TABLE)
         db?.execSQL(CREATE_TABLE) // create table 문장을 실행해주는 것이다.
 
-        db?.execSQL("INSERT INTO ${TABLE_NAME} values (null,'제육볶음','대한민국')") // 예문을 넣는 것이다.
     }
 
 
@@ -89,12 +88,25 @@ class HospitalDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME,nul
 
                 // PartialItem을 생성하여 리스트에 추가
                 partialItemList.add(PartialItem(id, name, type))
+
+                // Log를 사용하여 정보 출력
+                Log.d("DiaryActivity", "ID: $id, Name: $name, Type: $type")
             } while (cursor.moveToNext())
         }
 
         cursor.close()
         db.close()
         return partialItemList
+    }
+
+    fun deleteData(name: String): Boolean {
+        val db = this.writableDatabase
+        val whereClause = "$COL_NAME = ?"
+        val whereArgs = arrayOf(name)
+        val result = db.delete(TABLE_NAME, whereClause, whereArgs)
+        db.close()
+
+        return result > 0
     }
 
     data class PartialItem(
