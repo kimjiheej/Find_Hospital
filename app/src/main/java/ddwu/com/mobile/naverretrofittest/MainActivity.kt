@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
             val apiCall = service.getBooksByKeyword(
                 resources.getString(R.string.hospital_key),
-                "5", "10", keyword
+                "5", "30", keyword
             )
 
             apiCall.enqueue(object : Callback<HospitalRoot> {
