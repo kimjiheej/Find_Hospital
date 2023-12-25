@@ -3,10 +3,9 @@ package ddwu.com.mobile.naverretrofittest.network
 import ddwu.com.mobile.naverretrofittest.data.HospitalRoot
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Query
 
-interface IBookAPIService {
+interface HospitalAPIService {
     @GET("getMdclinst")
     fun getBooksByKeyword (
         @Query("ServiceKey") serviceKey: String,
