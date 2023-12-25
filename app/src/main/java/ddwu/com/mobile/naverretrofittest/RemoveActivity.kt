@@ -39,6 +39,7 @@ class RemoveActivity : AppCompatActivity() {
         btnReturn.setOnClickListener {
             val intent = Intent(this, DiaryActivity::class.java)
             startActivity(intent)
+            finish() // 현재 RemoveActivity를 종료하고 DiaryActivity로 돌아갑니다.
         }
     }
 }

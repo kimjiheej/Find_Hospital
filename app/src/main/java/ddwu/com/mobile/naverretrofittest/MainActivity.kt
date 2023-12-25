@@ -112,8 +112,8 @@ class MainActivity : AppCompatActivity() {
                             5
                         ) { addresses ->
                             CoroutineScope(Dispatchers.Main).launch {
-                                showData("Latitude: ${location.latitude}, Longitude: ${location.longitude}")
-                                showData(addresses?.get(0)?.getAddressLine(0).toString())
+//                                showData("Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+//                                showData(addresses?.get(0)?.getAddressLine(0).toString())
                                 isFirstLocationUpdate = false
                                 fusedLocationClient.removeLocationUpdates(locCallback)
                             }
@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity() {
             when {
                 permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
                         permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true -> {
-                    showData("Location permissions are granted")
+
                     startLocUpdates()
                 }
                 else -> {

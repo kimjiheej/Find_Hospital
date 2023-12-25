@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onClick"
-            android:text="읽기" />
+            android:text="돌아가기" />
 
         <Button
             android:id="@+id/btnRemove"
