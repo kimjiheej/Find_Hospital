@@ -10,7 +10,7 @@ data class HospitalRoot(
 )
 
 data class Item(
-    val no: Long,
+    val no: Int,
     val type: String,
     val inst_nm: String,
     val lctn: String,

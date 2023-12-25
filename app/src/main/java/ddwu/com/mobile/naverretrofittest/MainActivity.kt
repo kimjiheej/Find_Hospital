@@ -2,7 +2,6 @@ package ddwu.com.mobile.naverretrofittest
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -20,7 +19,7 @@ import com.google.android.gms.location.Priority
 import ddwu.com.mobile.naverretrofittest.data.HospitalRoot
 import ddwu.com.mobile.naverretrofittest.databinding.ActivityMainBinding
 import ddwu.com.mobile.naverretrofittest.network.IBookAPIService
-import ddwu.com.mobile.naverretrofittest.ui.BookAdapter
+import ddwu.com.mobile.naverretrofittest.ui.HospitalAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
 
     lateinit var mainBinding: ActivityMainBinding
-    lateinit var adapter: BookAdapter
+    lateinit var adapter: HospitalAdapter
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var geocoder: Geocoder
@@ -53,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         geocoder = Geocoder(this)
 
 
-        adapter = BookAdapter(currentLoc)
+        adapter = HospitalAdapter(currentLoc)
         mainBinding.rvBooks.adapter = adapter
         mainBinding.rvBooks.layoutManager = LinearLayoutManager(this)
 

@@ -6,14 +6,17 @@ import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import ddwu.com.mobile.naverretrofittest.HospitalDBHelper
 import ddwu.com.mobile.naverretrofittest.MapActivity
 import ddwu.com.mobile.naverretrofittest.data.Item
 import ddwu.com.mobile.naverretrofittest.databinding.ListItemBinding
 import java.io.IOException
 
 
-class BookAdapter(private var currentLoc: Location?) : RecyclerView.Adapter<BookAdapter.BookHolder>() {
+class HospitalAdapter(private var currentLoc: Location?) : RecyclerView.Adapter<HospitalAdapter.BookHolder>() {
     var books: List<Item>? = null
 
     override fun getItemCount(): Int {
@@ -65,6 +68,32 @@ class BookAdapter(private var currentLoc: Location?) : RecyclerView.Adapter<Book
                 context.startActivity(intent)
             }
 
+            holder.itemView.setOnLongClickListener {
+                val context = holder.itemView.context
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("저장하시겠습니까?")
+
+                builder.setPositiveButton("예") { dialog, which ->
+                    // 예를 클릭했을 때 수행할 작업
+                    val dbHelper = HospitalDBHelper(context)
+                    val currentItem = books?.get(position)
+
+                    currentItem?.let { item ->
+                        dbHelper.insertData(item.inst_nm, item.type)
+                    }
+                    Toast.makeText(context, "아이템을 저장했습니다.", Toast.LENGTH_SHORT).show()
+                }
+
+                builder.setNegativeButton("아니요") { dialog, which ->
+                    // 아니요를 클릭했을 때 수행할 작업
+                    Toast.makeText(context, "저장을 취소했습니다.", Toast.LENGTH_SHORT).show()
+                }
+
+                val dialog = builder.create()
+                dialog.show()
+
+                true // 이벤트 소비
+            }
             holder.itemBinding.type.setOnClickListener {
                 clickListener?.onItemClick(it, position)
             }
@@ -87,4 +116,6 @@ class BookAdapter(private var currentLoc: Location?) : RecyclerView.Adapter<Book
         currentLoc = newLocation
         notifyDataSetChanged() // 위치 정보가 업데이트되면 RecyclerView를 새로 고침
     }
+
+
 }
