@@ -1,7 +1,7 @@
 ## <img src="https://img.shields.io/badge/Android-색상?style=for-the-badge&logo=Android&logoColor=white"> 경기도 병원 찾기 애플리케이션
 
 
-## ❗ 어떠한 앱인가   
+## ❗ 어떠한 앱인가요?
 - 모바일 응용 수업의 기말 개인 프로젝트이다.
 - 안드로이드 스튜디오로 제작한 앱이다. (kotlin 사용) 
 - 경기도에 있는 병원들을 구 별로 검색할 수 있다. openAPI - (용인구.수지구.처인구) 
