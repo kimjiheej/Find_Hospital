@@ -25,7 +25,7 @@
 
 ## UI (서비스 페이지)
 🍎 용인에 있는 구별로 (수지구.처인구.기흥구) 병원 리스트를 검색할 수 있다. <br>
-🍎 병원 recyclerView 를 클릭하면 구글맵에서 병원의 위치를 볼 수 있다. 
+🍎 병원 recyclerView 를 클릭하면 구글맵에서 병원의 위치를 볼 수 있다. <br>
 🍎 사용자의 위치와 병원의 위치를 마커로 표시하여 polyline 으로 이어준다.<br>
 
 ![20231226_202957](https://github.com/kimjiheej/Find_Hospital/assets/66732343/1e51355b-6a53-4e24-900a-ffd0284908bf) ![20231226_205309](https://github.com/kimjiheej/Find_Hospital/assets/66732343/05bf1873-740c-4704-af1e-b0cc4f378123)
